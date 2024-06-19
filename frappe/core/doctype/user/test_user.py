@@ -462,7 +462,7 @@ class TestUser(FrappeTestCase):
 
 class TestImpersonation(FrappeAPITestCase):
 	def test_impersonation(self):
-		with test_user(roles=["System Manager"]) as user:
+		with test_user(roles=["System Manager"], commit=True) as user:
 			self.post(
 				"/api/method/frappe.core.doctype.user.user.impersonate",
 				{"user": user.name, "reason": "test", "sid": self.sid},
@@ -471,6 +471,7 @@ class TestImpersonation(FrappeAPITestCase):
 			self.assertEqual(resp.json["message"], user.name)
 
 
+@contextmanager
 def test_user(
 	*, first_name: str | None = None, email: str | None = None, roles: list[str], commit=False, **kwargs
 ):
